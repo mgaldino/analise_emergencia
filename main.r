@@ -32,12 +32,7 @@ teste <- item_contrato %>%
 # Código Manoel para identificar serviços
 servicos <- item_contrato %>%
   mutate(ds_item = tolower(iconv(ds_item , from="UTF-8", to="ASCII//TRANSLIT"))) %>%
-  filter(stringr::str_detect(ds_item, "(contratacao de empresa)|(prestacao de servico[s]?)|^servico[s]?|
-                    (a prestacao de)|(contratacao de prestacao)|(contratacao de servico)|
-                    (aluguel/loca)|servia|(contratacao contratacao de)| (contratacao da empresa)|
-                    (contratacao de)|(repasse hospital)|(empenho global)|(locacao de infraestrutura)|
-                    (fornecimento de alimentacao)|(fornecimento de gestao)|(contratacao emergencial gerenciamento)|
-                    (gerenciamento, operacionalizacao)|(reforma do predio)|(execucao de obras)|(contratacao, de servicos)")) %>%
+  filter(stringr::str_detect(ds_item, "(contratacao de empresa)|(prestacao de servico[s]?)|^servico[s]?|(a prestacao de)|(contratacao de prestacao)|(contratacao de servico)|(aluguel/loca)|servia|(contratacao contratacao de)|(contratacao da empresa)|(contratacao de)|(repasse hospital)|(empenho global)|(locacao de infraestrutura)|(fornecimento de alimentacao)|(fornecimento de gestao)|(contratacao emergencial gerenciamento)|(gerenciamento, operacionalizacao)|(reforma do predio)|(execucao de obras)|(contratacao, de servicos)")) %>%
   mutate(flag_servico = 1)
 
 
