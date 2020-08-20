@@ -1,4 +1,13 @@
+trace(grDevices::png, quote({
+  if (missing(type) && missing(antialias)) {
+    type <- "cairo-png"
+    antialias <- "subpixel"
+  }
+}), print = FALSE)
+
+
 library(dplyr)
+library(ggplot2)
 library(knitr)
 library(kableExtra)
 
@@ -24,9 +33,6 @@ max_casos <- casos %>% group_by(codmun) %>% top_n(1, casos_acumulado)
 # Filtrar apenas dados de 2017 do IBGE
 ibge <- filter(ibge, ano == 2017)
 ibge <- mutate(ibge, cod_sem_ver = substr(codigo_do_municipio, 1,6))
-
-teste <- item_contrato %>%
-  mutate(ds_item = tolower(iconv(ds_item , from="UTF-8", to="ASCII//TRANSLIT")))
 
 
 # Código Manoel para identificar serviços
@@ -100,6 +106,13 @@ item_contrato %>%
   kable_styling(bootstrap_options = c("striped"), position = "center")
 
 # Regressão valor_sobre_pop casos_sobre_hab
+ggplot(soma_mun_item_contr, aes(valor_sobre_pop, produto_interno_bruto_per_cap)) +
+  geom_point(aes(colour = log(casos_sobre_hab))) +
+  scale_colour_gradientn(colours = terrain.colors(10)) +
+  geom_smooth(method = "lm", se= FALSE)
+
+  
+
 
 head(arrange(select(soma_mun_item_contr,nome_do_municipio, soma_vl_item_contrato, valor_sobre_pop, valor_sobre_casos, lic_concluidas),desc(lic_concluidas)), n = 10) %>%
   kable(align="l", format.args = list(big.mark = ","), digits=2) %>%
@@ -108,5 +121,9 @@ head(arrange(select(soma_mun_item_contr,nome_do_municipio, soma_vl_item_contrato
 # 
 
 
+# Summaries
+n_distinct(item_contrato$cd_municipio_ibge)
 
-write.csv(soma_mun_item_contr, "soma_contra.csv", fileEncoding = "UTF-8")
+
+
+contrato <- data.table::fread("info_contrato.csv", encoding="UTF-8", colClasses=c("id_orgao"="character", "cd_municipio_ibge" = "character"))
